@@ -281,7 +281,7 @@ op_codes = {
     },
 }
 
-def unwhite(str):
+def __unwhite(str):
     return re.sub(r'\s+', '', str)
 
 def assemble(code, vars):
@@ -301,7 +301,8 @@ def assemble(code, vars):
 
         try:
             # separate op and its args, convert to lowercase, remove all whitespace
-            op, args = map(lambda p: unwhite(p.lower()), re.split(r'\s+', line, 2))
+            op, args = map(lambda p: __unwhite(p.lower()),
+                           re.split(r'\s+', line, 2))
         except ValueError:
             print('bad op at line ' + str(line_count) + ': ' + line)
             return None
@@ -317,7 +318,7 @@ def assemble(code, vars):
                 addr = map(lambda a: int("0x" + a, 16), addr)
 
                 # make list of byte code
-                output.extend([op_codes[op][key]] + addr)
+                output.extend([op_codes[op][key]] + list(addr))
                 found = True
                 break
 
@@ -334,12 +335,12 @@ def assemble(code, vars):
     return output
 
 # read the sample code
-code = ''
-with open('code.asm', 'rb') as file:
-    code = file.read()
-    file.close()
+# code = ''
+# with open('test/code.asm', 'rb') as file:
+#     code = file.read()
+#     file.close()
 
-# convert sample code to byte code
-bytes = assemble(code, [])
-print(map(lambda x: hex(x), bytes))
+# # convert sample code to byte code
+# bytes = assemble(code, [])
+# print(map(lambda x: hex(x), bytes))
 #print(binascii.hexlify(bytes))

@@ -1,0 +1,1 @@
+from nessmith.assemble import assemble
