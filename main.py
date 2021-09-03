@@ -2,7 +2,7 @@ import os
 from data.textmap import text_map
 import nessmith
 
-print(list(map(lambda x: hex(x), nessmith.assemble("LDA $6000", []))))
+print(list(map(lambda x: hex(x), nessmith.assemble("LDA $6000"))))
 # file_in = open("./test/cv2.nes", "rb")
 # data = file_in.read()
 # file_in.close()

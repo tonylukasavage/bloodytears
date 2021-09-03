@@ -2,3 +2,5 @@
 *.app
 *.py[cod]
 __pycache__
+htmlcov
+.coverage
