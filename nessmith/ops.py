@@ -51,9 +51,9 @@ op_codes = {
     # 'bne': {
     #     'branch': 0x24,
     # },
-    # 'beq': {
-    #     'branch': 0x24,
-    # },
+    'beq': {
+        'label': 0x24,
+    },
     'brk': {
         'none': 0x00
     },

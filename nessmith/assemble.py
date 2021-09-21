@@ -13,10 +13,11 @@ arg_formats = {
     'absolutey': re.compile(r'^\$(\d{2})(\d{2}),y$'),
     'indirect': re.compile(r'^\(\$(\d{2})(\d{2})\)$'),
     'indirectx': re.compile(r'^\(\$(\d{2}),x\)$'),
-    'indirecty': re.compile(r'^\(\$(\d{2})\),y$')
+    'indirecty': re.compile(r'^\(\$(\d{2})\),y$'),
+    'label': re.compile(r'^\w+$')
 }
 
-label_format = re.compile(r'^\w+$')
+branch_ops = [ 'beq' ]
 
 class NesSmithAssembleError(Exception):
     def __init__(self, msg, line, code):
@@ -51,8 +52,9 @@ def assemble(code, vars={}):
         # check if op is valid
         if op not in op_codes.keys():
             if args == '':
-                if not label_format.search(op):
+                if not arg_formats['label'].search(op):
                     raise NesSmithAssembleError('Invalid label "' + op + '" on line ' + str(line_count), line_count, line)
+                # add label with byte position
                 labels[op] = byte_count
                 continue
             else:
