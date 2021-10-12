@@ -14,7 +14,7 @@ arg_formats = {
     'indirect': re.compile(r'^\(\$(\d{2})(\d{2})\)$'),
     'indirectx': re.compile(r'^\(\$(\d{2}),x\)$'),
     'indirecty': re.compile(r'^\(\$(\d{2})\),y$'),
-    'label': re.compile(r'^\w+$')
+    'label': re.compile(r'^(\w+):$')
 }
 
 branch_ops = [ 'beq' ]
@@ -61,7 +61,7 @@ def assemble(code, vars={}):
                 raise NesSmithAssembleError('Invalid op code "' + op + '" on line ' + str(line_count), line_count, code)
 
         # find what arg format is being used
-        found = None
+        found = False
         for key in arg_formats:
             match = arg_formats[key].match(args)
             if match:
@@ -79,7 +79,7 @@ def assemble(code, vars={}):
 
         try:
             if not found:
-                raise
+                raise Exception
 
         except Exception:
             raise NesSmithAssembleError('Invalid args "' + op + '" on line ' + str(line_count), line_count, code)

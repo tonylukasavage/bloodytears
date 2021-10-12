@@ -1,5 +1,5 @@
-import binascii
 import unittest
+import binascii
 from nessmith import assemble, NesSmithAssembleError
 
 def x(s):
@@ -24,16 +24,16 @@ class TestNesSmith(unittest.TestCase):
         """)), "a5414c3412613160")
         self.assertEqual(x(assemble("""
         LDA $41
-        LABEL1
+        label1:
         JMP $1234
-        LABEL2
+        label2:
         """)), "a5414c3412")
 
     def test_assemble_bad_opcode(self):
         with self.assertRaises(NesSmithAssembleError):
             assemble("LDA $123432")
         with self.assertRaises(NesSmithAssembleError):
-            assemble("JHG\HJ")
+            assemble("JHG\\HJ")
 
 if __name__ == '__main__':
     unittest.main()
