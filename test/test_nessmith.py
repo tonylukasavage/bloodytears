@@ -26,6 +26,7 @@ class TestNesSmith(unittest.TestCase):
         LDA $41
         label1:
         JMP $1234
+        # melon farmer
         label2:
         """)), "a5414c3412")
 

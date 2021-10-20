@@ -40,8 +40,18 @@ def assemble(code, vars={}):
     # process each line of code
     line_count = 1
     for line in lines:
+        # remove comments
+        line = line.split('#')[0]
+
         # skip empty lines
         if __unwhite(line) == '':
+            line_count += 1
+            continue
+
+        # check for label
+        match = arg_formats['label'].match(line)
+        if match:
+            labels[match.group(1)] = byte_count
             line_count += 1
             continue
 
