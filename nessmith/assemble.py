@@ -13,11 +13,11 @@ arg_formats = {
     'absolutey': re.compile(r'^\$(\d{2})(\d{2}),y$'),
     'indirect': re.compile(r'^\(\$(\d{2})(\d{2})\)$'),
     'indirectx': re.compile(r'^\(\$(\d{2}),x\)$'),
-    'indirecty': re.compile(r'^\(\$(\d{2})\),y$'),
-    'label': re.compile(r'^(\w+):$')
+    'indirecty': re.compile(r'^\(\$(\d{2})\),y$')
 }
 
-branch_ops = [ 'beq' ]
+branch_ops = ['beq']
+
 
 class NesSmithAssembleError(Exception):
     def __init__(self, msg, line, code):
@@ -26,8 +26,10 @@ class NesSmithAssembleError(Exception):
         self.code = code
         super().__init__(msg)
 
+
 def __unwhite(str):
     return re.sub(r'\s+', '', str)
+
 
 def assemble(code, vars={}):
     labels = {}
@@ -49,50 +51,57 @@ def assemble(code, vars={}):
             continue
 
         # check for label
-        match = arg_formats['label'].match(line)
+        match = re.compile(r'^(\w+):$').match(line)
         if match:
             labels[match.group(1)] = byte_count
             line_count += 1
             continue
 
         # separate op and its args, convert to lowercase, remove all whitespace
-        tokens = list(map(lambda p: __unwhite(p.lower()), re.split(r'\s+', line, 2)))
-        op, args = (tokens[0], tokens[1]) if len(tokens) > 1 else (tokens[0], '')
+        tokens = list(map(lambda p: __unwhite(
+            p.lower()), re.split(r'\s+', line, 2)))
+        op, args = (tokens[0], tokens[1]) if len(
+            tokens) > 1 else (tokens[0], '')
 
         # check if op is valid
         if op not in op_codes.keys():
-            if args == '':
-                if not arg_formats['label'].search(op):
-                    raise NesSmithAssembleError('Invalid label "' + op + '" on line ' + str(line_count), line_count, line)
-                # add label with byte position
-                labels[op] = byte_count
-                continue
-            else:
-                raise NesSmithAssembleError('Invalid op code "' + op + '" on line ' + str(line_count), line_count, code)
+            # if args == '':
+            #     if not arg_formats['label'].search(op):
+            #         raise NesSmithAssembleError('Invalid label "' + op + '" on line ' + str(line_count), line_count, line)
+            #     # add label with byte position
+            #     labels[op] = byte_count
+            #     continue
+            # else:
+            raise NesSmithAssembleError(
+                'Invalid op code "' + op + '" on line ' + str(line_count), line_count, code)
 
         # find what arg format is being used
         found = False
         for key in arg_formats:
             match = arg_formats[key].match(args)
             if match:
-                # get little endian address
-                addr = list(match.groups())
-                addr.reverse()
-                addr = map(lambda a: int("0x" + a, 16), addr)
-                addr = list(addr)
+                if key == 'label':
+                    output.extend([op_codes[op][key], match.groups[1]])
+                else:
+                    # get little endian address
+                    addr = list(match.groups())
+                    addr.reverse()
+                    addr = map(lambda a: int("0x" + a, 16), addr)
+                    addr = list(addr)
 
-                # make list of byte code
-                output.extend([op_codes[op][key]] + addr)
-                byte_count += 1 + len(addr)
-                found = True
-                break
+                    # make list of byte code
+                    output.extend([op_codes[op][key]] + addr)
+                    byte_count += 1 + len(addr)
+                    found = True
+                    break
 
         try:
             if not found:
                 raise Exception
 
         except Exception:
-            raise NesSmithAssembleError('Invalid args "' + op + '" on line ' + str(line_count), line_count, code)
+            raise NesSmithAssembleError(
+                'Invalid args "' + op + '" on line ' + str(line_count), line_count, code)
         finally:
             line_count += 1
 
@@ -107,4 +116,4 @@ def assemble(code, vars={}):
 # # convert sample code to byte code
 # bytes = assemble(code, [])
 # print(map(lambda x: hex(x), bytes))
-#print(binascii.hexlify(bytes))
+# print(binascii.hexlify(bytes))
