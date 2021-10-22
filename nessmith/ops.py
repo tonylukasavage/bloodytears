@@ -20,6 +20,7 @@ op_codes = {
         'indirecty': 0x31
     },
     'asl': {
+        'none': 0x0A,
         'accumulator': 0x0A,
         'zeropage': 0x06,
         'zeropagex': 0x16,
@@ -30,29 +31,29 @@ op_codes = {
         'zeropage': 0x24,
         'absolute': 0x2C
     },
-    # 'bpl': {
-    #     'branch': 0x24,
-    # },
-    # 'bmi': {
-    #     'branch': 0x24,
-    # },
-    # 'bvc': {
-    #     'branch': 0x24,
-    # },
-    # 'bvs': {
-    #     'branch': 0x24,
-    # },
-    # 'bcc': {
-    #     'branch': 0x24,
-    # },
-    # 'bcs': {
-    #     'branch': 0x24,
-    # },
-    # 'bne': {
-    #     'branch': 0x24,
-    # },
+    'bpl': {
+        'label': 0x10,
+    },
+    'bmi': {
+        'label': 0x30,
+    },
+    'bvc': {
+        'label': 0x50,
+    },
+    'bvs': {
+        'label': 0x70,
+    },
+    'bcc': {
+        'label': 0x90,
+    },
+    'bcs': {
+        'label': 0xB0,
+    },
+    'bne': {
+        'label': 0xD0,
+    },
     'beq': {
-        'label': 0x24,
+        'label': 0xF0,
     },
     'brk': {
         'none': 0x00
